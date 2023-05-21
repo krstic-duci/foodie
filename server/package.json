@@ -5,20 +5,19 @@
   "main": "src/index.ts",
   "scripts": {
     "lint": "tsc --noEmit",
-    "compile": "tsc",
     "start": "nodemon"
   },
   "license": "ISC",
   "type": "module",
   "dependencies": {
     "@apollo/server": "4.7.1",
-    "apollo-server-express": "3.12.0",
     "body-parser": "1.20.2",
     "cors": "2.8.5",
     "express": "4.18.2",
     "graphql": "16.6.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.13",
     "@types/node": "20.2.1",
     "nodemon": "2.0.22",
     "ts-node": "10.9.1",
