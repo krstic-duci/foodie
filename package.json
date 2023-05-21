@@ -1,0 +1,32 @@
+{
+  "name": "foodie",
+  "version": "1.0.0",
+  "description": "Foodie app",
+  "main": "server/server.ts",
+  "scripts": {
+    "install:server": "cd server && npm install",
+    "install:client": "cd client && npm install",
+    "lint:client": "cd client && npm run lint",
+    "lint:server": "cd server && npm run lint",
+    "test:server": "cd server && npm test",
+    "test:client": "cd client && npm test",
+    "prettier:client": "cd client && npm run prettier",
+    "prettier:server": "cd server && npm run prettier",
+    "server:dev": "cd server && npm start",
+    "client:dev": "cd client && npm start",
+    "dev": "npm run server:dev && npm run client:dev",
+    "build:client": "cd client && npm run build",
+    "prepare": "husky install"
+  },
+  "author": "krstic.duci@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "8.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettier:client",
+      "pre-push": "npm run lint:client && npm run test:client"
+    }
+  }
+}

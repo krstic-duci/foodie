@@ -1,0 +1,11 @@
+{
+  "printWidth": 80,
+  "tabWidth": 2,
+  "trailingComma": "none",
+  "singleQuote": false,
+  "semi": true,
+  "jsxSingleQuote": true,
+  "importOrder": ["^[./]", "^[../]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}
