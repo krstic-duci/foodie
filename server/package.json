@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "lint": "tsc --noEmit",
-    "start": "nodemon"
+    "generate": "graphql-codegen --config codegen.yaml",
+    "start": "npm run generate && nodemon"
   },
   "license": "ISC",
   "type": "module",
@@ -17,7 +18,10 @@
     "graphql": "16.6.0"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.13",
+    "@graphql-codegen/cli": "3.3.1",
+    "@graphql-codegen/typescript": "3.0.4",
+    "@graphql-codegen/typescript-resolvers": "3.2.1",
+    "@types/cors": "2.8.13",
     "@types/node": "20.2.1",
     "nodemon": "2.0.22",
     "ts-node": "10.9.1",
