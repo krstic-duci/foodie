@@ -7,35 +7,19 @@ import express from "express";
 import { readFileSync } from "fs";
 import http from "http";
 
-import { Resolvers } from "./__generated__/schemaTypes";
-
-const books = [
-  {
-    title: "The Awakening",
-    author: "Kate Chopin"
-  },
-  {
-    title: "City of Glass",
-    author: "Paul Auster"
-  }
-];
+// FIXME: What ?!?
+import { db } from "./db/index.js";
+import { resolvers } from "./resolvers/index.js";
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 
-// Resolvers define how to fetch the types defined in your schema.
-// This resolver retrieves books from the "books" array above.
-const resolvers: Resolvers = {
-  Query: {
-    books: () => books
-  }
-};
-
 // Required logic for integrating with Express
 const app = express();
 app.disable("x-powered-by");
+
 // Our httpServer handles incoming requests to our Express app.
 // Below, we tell Apollo Server to "drain" this httpServer,
 // enabling our servers to shut down gracefully.
@@ -71,3 +55,6 @@ await new Promise<void>((resolve) =>
   httpServer.listen({ port: 4000 }, resolve)
 );
 console.log(`Server ready at http://localhost:4000/graphql`);
+
+// Database connection
+db.connect();

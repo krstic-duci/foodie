@@ -13,7 +13,7 @@
     "test:client": "cd client && npm test",
     "prettier": "prettier --config .prettierrc --cache --check \"{client,server}/**/*.{ts,tsx}\" || { rm -f node_modules/.cache/prettier/.prettier-cache ; exit 1; }",
     "prettier:fix": "prettier --config .prettierrc --cache --write \"{client,server}/**/*.{ts,tsx}\"",
-    "server:dev": "cd server && npm start:all",
+    "server:dev": "cd server && npm start",
     "client:dev": "cd client && npm start",
     "dev": "run-s server:dev && client:dev",
     "prepare": "husky install"
@@ -29,7 +29,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "npm run prettier",
-      "pre-push": "npm run lint:client && npm run test:client"
+      "pre-push": "npm run lint:client && npm run test:client && npm run lint:server"
     }
   }
 }

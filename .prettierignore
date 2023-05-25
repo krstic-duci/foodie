@@ -1,5 +1,7 @@
 node_modules
 client/node_modules
+client/src/__generated__
 client/public
 server/node_modules
+server/src/__generated__
 server/dist
