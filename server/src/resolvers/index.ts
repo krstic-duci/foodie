@@ -1,20 +1,13 @@
-import { Resolvers } from "../__generated__/schemaTypes";
+import { Resolvers } from "../__generated__/schemaTypes.js";
+import { books } from "./books.js";
 
-const MOCK_BOOKS = [
-  {
-    title: "The Awakening",
-    author: "Kate Chopin"
-  },
-  {
-    title: "City of Glass",
-    author: "Paul Auster"
-  }
-];
-
-// Resolvers define how to fetch the types defined in your schema.
-// This resolver retrieves books from the "books" array above.
 export const resolvers: Resolvers = {
   Query: {
-    books: () => MOCK_BOOKS
+    getBooks: () => books.getBooks(),
+    getBookById: (_, args, contextValue) =>
+      books.getBookById(_, args, contextValue)
+  },
+  Mutation: {
+    addBook: (_, args, contextValue) => books.addBook(_, args, contextValue)
   }
 };

@@ -9,6 +9,7 @@ import http from "http";
 
 // FIXME: What ?!?
 import { db } from "./db/index.js";
+import { models } from "./db/models/index.js";
 import { resolvers } from "./resolvers/index.js";
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
@@ -37,7 +38,10 @@ db.connect()
       // an Apollo Server instance and optional configuration options
       expressMiddleware(server, {
         // TODO: check this
-        context: async ({ req }) => ({ token: req.headers.token })
+        // @ts-ignore
+        context: () => {
+          return { models };
+        }
       })
     );
 

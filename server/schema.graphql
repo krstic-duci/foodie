@@ -1,12 +1,18 @@
-# This "Book" type defines the queryable fields for every book in our data source.
 type Book {
-  title: String
-  author: String
+  id: ID!
+  title: String!
+  author: String!
 }
 
 # The "Query" type is special: it lists all of the available queries that
-# clients can execute, along with the return type for each. In this
-# case, the "books" query returns an array of zero or more Books (defined above).
+# clients can execute, along with the return type for each.
 type Query {
-  books: [Book]
+  getBooks: [Book!]!
+  getBookById(id: ID!): Book!
+}
+
+# The "Mutation" type is special: it lists all of the available queries that
+# clients can execute, along with the return type for each.
+type Mutation {
+  addBook(title: String!, author: String!): Book!
 }

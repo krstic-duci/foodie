@@ -3,10 +3,10 @@
     "strict": true,
     "rootDirs": ["src"],
     "outDir": "dist",
-    "lib": ["es2020"],
+    "lib": ["ESNext"],
     "target": "ES2017",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "types": ["node"]
   },
