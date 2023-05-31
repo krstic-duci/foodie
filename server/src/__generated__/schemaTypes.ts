@@ -24,12 +24,26 @@ export type Book = {
 export type Mutation = {
   __typename?: 'Mutation';
   addBook: Book;
+  login: Scalars['String'];
+  signup: Scalars['String'];
 };
 
 
 export type MutationAddBookArgs = {
   author: Scalars['String'];
   title: Scalars['String'];
+};
+
+
+export type MutationLoginArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+
+export type MutationSignupArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type Query = {
@@ -40,6 +54,13 @@ export type Query = {
 
 
 export type QueryGetBookByIdArgs = {
+  id: Scalars['ID'];
+};
+
+export type User = {
+  __typename?: 'User';
+  books: Array<Book>;
+  email: Scalars['String'];
   id: Scalars['ID'];
 };
 
@@ -121,6 +142,7 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  User: ResolverTypeWrapper<User>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -131,6 +153,7 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {};
   Query: {};
   String: Scalars['String'];
+  User: User;
 }>;
 
 export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{
@@ -142,6 +165,8 @@ export type BookResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   addBook?: Resolver<ResolversTypes['Book'], ParentType, ContextType, RequireFields<MutationAddBookArgs, 'author' | 'title'>>;
+  login?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  signup?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'email' | 'password'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -149,9 +174,17 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getBooks?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType>;
 }>;
 
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
+  books?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type Resolvers<ContextType = any> = ResolversObject<{
   Book?: BookResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
 }>;
 

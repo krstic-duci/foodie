@@ -11,6 +11,7 @@ import http from "http";
 import { db } from "./db/index.js";
 import { models } from "./db/models/index.js";
 import { resolvers } from "./resolvers/index.js";
+import { getToken } from "./utils/getToken.js";
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 
@@ -39,8 +40,12 @@ db.connect()
       expressMiddleware(server, {
         // TODO: check this
         // @ts-ignore
-        context: () => {
-          return { models };
+        context: ({ req }) => {
+          // get the user token from the headers
+          const token = req.headers.authorization;
+          // try to retrieve a user with the token
+          const user = getToken(token);
+          return { models, user };
         }
       })
     );
