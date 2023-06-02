@@ -2,14 +2,13 @@
   "name": "server",
   "version": "1.0.0",
   "private": true,
-  "main": "src/index.ts",
+  "main": "src/server.ts",
   "scripts": {
     "lint": "tsc --noEmit",
     "generate": "graphql-codegen --config codegen.yaml",
     "start": "nodemon"
   },
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "@apollo/server": "4.7.1",
     "bcrypt": "5.1.0",

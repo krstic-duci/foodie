@@ -1,5 +1,8 @@
+// @ts-ignore
 import { ApolloServer } from "@apollo/server";
+// @ts-ignore
 import { expressMiddleware } from "@apollo/server/express4";
+// @ts-ignore
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import bodyParser from "body-parser";
 import cors, { CorsRequest } from "cors";
@@ -7,11 +10,10 @@ import express from "express";
 import { readFileSync } from "fs";
 import http from "http";
 
-// FIXME: What ?!?
-import { db } from "./db/index.js";
-import { models } from "./db/models/index.js";
-import { resolvers } from "./resolvers/index.js";
-import { getToken } from "./utils/getToken.js";
+import { db } from "./db/index";
+import { models } from "./db/models/index";
+import { resolvers } from "./resolvers/index";
+import { getToken } from "./utils/getToken";
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 
@@ -35,15 +37,11 @@ db.connect()
       cors<CorsRequest>(),
       // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
       bodyParser.json({ limit: "50mb" }),
-      // expressMiddleware accepts the same arguments:
-      // an Apollo Server instance and optional configuration options
       expressMiddleware(server, {
         // TODO: check this
         // @ts-ignore
-        context: ({ req }) => {
-          // get the user token from the headers
+        context: ({ req, res }) => {
           const token = req.headers.authorization;
-          // try to retrieve a user with the token
           const user = getToken(token);
           return { models, user };
         }

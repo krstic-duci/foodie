@@ -10,6 +10,31 @@ type User {
   books: [Book!]!
 }
 
+type SuccessMutationCall {
+  _: Boolean!
+}
+
+type SuccessLoginCall {
+  token: String!
+}
+
+type SuccessSignupCall {
+  token: String!
+}
+
+input SignupInput {
+  firstname: String!
+  lastname: String!
+  email: String!
+  password: String!
+  telephone: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
 # The "Query" type is special: it lists all of the available queries that
 # clients can execute, along with the return type for each.
 type Query {
@@ -20,7 +45,7 @@ type Query {
 # The "Mutation" type is special: it lists all of the available queries that
 # clients can execute, along with the return type for each.
 type Mutation {
-  addBook(title: String!, author: String!): Book!
-  login(email: String!, password: String!): String!
-  signup(email: String!, password: String!): String!
+  addBook(title: String!, author: String!): SuccessMutationCall!
+  login(input: LoginInput!): SuccessLoginCall!
+  signup(input: SignupInput!): SuccessSignupCall!
 }

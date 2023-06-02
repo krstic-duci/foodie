@@ -1,14 +1,16 @@
-import DisplayBooks from "./components/DisplayBooks";
+import { useState } from "react";
+import { BrowserRouter } from "react-router-dom";
 
-function App() {
+import Routes from "./router/Routes";
+
+const App = () => {
+  // TODO: implement auth jwt cookie check from backend
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   return (
-    <div>
-      <header>
-        <p>Welcome</p>
-      </header>
-      <DisplayBooks />
-    </div>
+    <BrowserRouter>
+      <Routes isAuthenticated={isAuthenticated} />
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

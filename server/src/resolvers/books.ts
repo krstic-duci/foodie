@@ -1,23 +1,28 @@
+import { authMiddleware } from "../middleware/auth";
+
 import {
   BookResolvers,
   MutationAddBookArgs,
   QueryGetBookByIdArgs
-} from "../__generated__/schemaTypes.js";
-import { models } from "../db/models/index.js";
+} from "__generated__/schemaTypes";
 
 export const books: BookResolvers = {
-  getBooks: async () => {
+  getBooks: async (_: any, __: any, { models }: any) => {
     return await models.Book.find();
   },
   // TODO: better typing
-  getBookById: async (_: any, args: QueryGetBookByIdArgs, { models }: any) => {
-    return await models.Book.findById(args.id);
-  },
+  getBookById: authMiddleware(
+    async (_: any, args: QueryGetBookByIdArgs, { models }: any) => {
+      return await models.Book.findById(args.id);
+    }
+  ),
   // TODO: better typing
-  addBook: async (_: any, args: MutationAddBookArgs, { models }: any) => {
-    return await models.Book.create({
-      title: args.title,
-      author: args.author
-    });
-  }
+  addBook: authMiddleware(
+    async (_: any, args: MutationAddBookArgs, { models }: any) => {
+      return await models.Book.create({
+        title: args.title,
+        author: args.author
+      });
+    }
+  )
 };

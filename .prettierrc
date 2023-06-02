@@ -5,7 +5,7 @@
   "singleQuote": false,
   "semi": true,
   "jsxSingleQuote": true,
-  "importOrder": ["^[./]", "^[../]"],
+  "importOrder": ["^[./]", "^[../]", "__generated__"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
 }

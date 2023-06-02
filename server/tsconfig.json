@@ -1,15 +1,24 @@
 {
   "compilerOptions": {
+    "target": "es6",
+    "lib": ["es5", "es6", "esnext.asynciterable", "es2017"],
+    "types": ["node"],
+    "module": "commonjs",
+    "outDir": "dist",
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "rootDirs": ["src"],
-    "outDir": "dist",
-    "lib": ["ESNext"],
-    "target": "ES2017",
-    "module": "NodeNext",
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
-    "types": ["node"]
+    "baseUrl": ".",
+    "paths": {
+      "__generated__/*": ["src/__generated__/*"],
+      "@database/*": ["src/db/*"],
+      "@resolvers/*": ["src/resolvers/*"]
+    }
   },
-  "exclude": ["node_modules"],
-  "include": ["src"]
+  "exclude": ["node_modules", "src/__generated__/"],
+  "include": ["src/**/*"]
 }

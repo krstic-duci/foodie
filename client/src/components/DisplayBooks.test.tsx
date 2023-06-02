@@ -12,7 +12,7 @@ it("should render", async () => {
       },
       result: {
         data: {
-          books: [
+          getBooks: [
             { title: "Buck", author: "bulldog" },
             { title: "Harry Potter", author: "J.K.Rowling" }
           ]

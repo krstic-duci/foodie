@@ -21,11 +21,16 @@ export type Book = {
   title: Scalars['String'];
 };
 
+export type LoginInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  addBook: Book;
-  login: Scalars['String'];
-  signup: Scalars['String'];
+  addBook: SuccessMutationCall;
+  login: SuccessLoginCall;
+  signup: SuccessSignupCall;
 };
 
 
@@ -36,14 +41,12 @@ export type MutationAddBookArgs = {
 
 
 export type MutationLoginArgs = {
-  email: Scalars['String'];
-  password: Scalars['String'];
+  input: LoginInput;
 };
 
 
 export type MutationSignupArgs = {
-  email: Scalars['String'];
-  password: Scalars['String'];
+  input: SignupInput;
 };
 
 export type Query = {
@@ -55,6 +58,29 @@ export type Query = {
 
 export type QueryGetBookByIdArgs = {
   id: Scalars['ID'];
+};
+
+export type SignupInput = {
+  email: Scalars['String'];
+  firstname: Scalars['String'];
+  lastname: Scalars['String'];
+  password: Scalars['String'];
+  telephone: Scalars['String'];
+};
+
+export type SuccessLoginCall = {
+  __typename?: 'SuccessLoginCall';
+  token: Scalars['String'];
+};
+
+export type SuccessMutationCall = {
+  __typename?: 'SuccessMutationCall';
+  _: Scalars['Boolean'];
+};
+
+export type SuccessSignupCall = {
+  __typename?: 'SuccessSignupCall';
+  token: Scalars['String'];
 };
 
 export type User = {
@@ -139,9 +165,14 @@ export type ResolversTypes = ResolversObject<{
   Book: ResolverTypeWrapper<Book>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  LoginInput: LoginInput;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
+  SignupInput: SignupInput;
   String: ResolverTypeWrapper<Scalars['String']>;
+  SuccessLoginCall: ResolverTypeWrapper<SuccessLoginCall>;
+  SuccessMutationCall: ResolverTypeWrapper<SuccessMutationCall>;
+  SuccessSignupCall: ResolverTypeWrapper<SuccessSignupCall>;
   User: ResolverTypeWrapper<User>;
 }>;
 
@@ -150,9 +181,14 @@ export type ResolversParentTypes = ResolversObject<{
   Book: Book;
   Boolean: Scalars['Boolean'];
   ID: Scalars['ID'];
+  LoginInput: LoginInput;
   Mutation: {};
   Query: {};
+  SignupInput: SignupInput;
   String: Scalars['String'];
+  SuccessLoginCall: SuccessLoginCall;
+  SuccessMutationCall: SuccessMutationCall;
+  SuccessSignupCall: SuccessSignupCall;
   User: User;
 }>;
 
@@ -164,14 +200,29 @@ export type BookResolvers<ContextType = any, ParentType extends ResolversParentT
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  addBook?: Resolver<ResolversTypes['Book'], ParentType, ContextType, RequireFields<MutationAddBookArgs, 'author' | 'title'>>;
-  login?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
-  signup?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'email' | 'password'>>;
+  addBook?: Resolver<ResolversTypes['SuccessMutationCall'], ParentType, ContextType, RequireFields<MutationAddBookArgs, 'author' | 'title'>>;
+  login?: Resolver<ResolversTypes['SuccessLoginCall'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
+  signup?: Resolver<ResolversTypes['SuccessSignupCall'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'input'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getBookById?: Resolver<ResolversTypes['Book'], ParentType, ContextType, RequireFields<QueryGetBookByIdArgs, 'id'>>;
   getBooks?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType>;
+}>;
+
+export type SuccessLoginCallResolvers<ContextType = any, ParentType extends ResolversParentTypes['SuccessLoginCall'] = ResolversParentTypes['SuccessLoginCall']> = ResolversObject<{
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type SuccessMutationCallResolvers<ContextType = any, ParentType extends ResolversParentTypes['SuccessMutationCall'] = ResolversParentTypes['SuccessMutationCall']> = ResolversObject<{
+  _?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type SuccessSignupCallResolvers<ContextType = any, ParentType extends ResolversParentTypes['SuccessSignupCall'] = ResolversParentTypes['SuccessSignupCall']> = ResolversObject<{
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
@@ -185,6 +236,9 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Book?: BookResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  SuccessLoginCall?: SuccessLoginCallResolvers<ContextType>;
+  SuccessMutationCall?: SuccessMutationCallResolvers<ContextType>;
+  SuccessSignupCall?: SuccessSignupCallResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 }>;
 

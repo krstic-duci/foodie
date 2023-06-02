@@ -1,5 +1,5 @@
-import Book from "./book.js";
-import User from "./user.js";
+import Book from "./book";
+import User from "./user";
 
 export const models = {
   Book,

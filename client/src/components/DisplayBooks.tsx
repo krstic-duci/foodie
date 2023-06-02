@@ -1,10 +1,11 @@
 import { useQuery } from "@apollo/client";
+import { Typography } from "@mui/material";
 
-import { gql } from "../__generated__/gql";
+import { graphql } from "../__generated__/gql";
 
-export const GET_BOOKS = gql(/* GraphQL */ `
+export const GET_BOOKS = graphql(`
   query GetBooks {
-    books {
+    getBooks {
       title
       author
     }
@@ -17,14 +18,14 @@ function DisplayBooks() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error.message}</p>;
 
-  if (!data?.books) return null;
+  if (!data?.getBooks) return null;
 
   return (
     <>
-      {data.books.map((book, index: number) => (
+      {data.getBooks.map((book, index: number) => (
         <div key={index}>
-          <h3>{book?.author}</h3>
-          <p>{book?.title}</p>
+          <h3>Author: {book?.author}</h3>
+          <Typography>Book title: {book?.title}</Typography>
         </div>
       ))}
     </>
