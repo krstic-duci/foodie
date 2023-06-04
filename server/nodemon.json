@@ -1,6 +1,6 @@
 {
-  "watch": ["src"],
-  "ext": "ts,json",
-  "ignore": ["src/**/*.test.ts", "src/**/*.test.tsx"],
-  "exec": "ts-node ./src/server.ts"
+  "watch": ["./src/", "./schema.graphql"],
+  "ext": "ts,json,graphql",
+  "ignore": ["src/**/*.test.ts", "src/**/*.test.tsx", "node_modules", "src/__generated__/"],
+  "exec": "ts-node ./src/index.ts"
 }

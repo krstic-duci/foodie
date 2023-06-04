@@ -2,14 +2,14 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    firstname: {
-      type: String,
-      required: true
-    },
-    lastname: {
-      type: String,
-      required: true
-    },
+    // firstname: {
+    //   type: String,
+    //   required: true
+    // },
+    // lastname: {
+    //   type: String,
+    //   required: true
+    // },
     email: {
       type: String,
       required: true,
@@ -19,9 +19,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    telephone: {
-      type: String || Number,
-      required: true
+    // telephone: {
+    //   type: String,
+    //   required: true
+    // },
+    count: {
+      type: Number,
+      default: 0
     }
   },
   { timestamps: true }
