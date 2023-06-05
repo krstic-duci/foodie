@@ -7,9 +7,11 @@ const App = () => {
   // TODO: implement auth jwt cookie check from backend
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   return (
-    <BrowserRouter>
-      <Routes isAuthenticated={isAuthenticated} />
-    </BrowserRouter>
+    <main>
+      <BrowserRouter>
+        <Routes isAuthenticated={isAuthenticated} />
+      </BrowserRouter>
+    </main>
   );
 };
 

@@ -1,51 +1,8 @@
 type Book {
-  id: ID!
   title: String!
   author: String!
 }
 
-type User {
-  id: ID!
-  email: String!
-  books: [Book!]!
-}
-
-type SuccessMutationCall {
-  _: Boolean!
-}
-
-type SuccessLoginCall {
-  token: String!
-}
-
-type SuccessSignupCall {
-  token: String!
-}
-
-input SignupInput {
-  firstname: String!
-  lastname: String!
-  email: String!
-  password: String!
-  telephone: String!
-}
-
-input LoginInput {
-  email: String!
-  password: String!
-}
-
-# The "Query" type is special: it lists all of the available queries that
-# clients can execute, along with the return type for each.
 type Query {
-  getBooks: [Book!]!
-  getBookById(id: ID!): Book!
-}
-
-# The "Mutation" type is special: it lists all of the available queries that
-# clients can execute, along with the return type for each.
-type Mutation {
-  addBook(title: String!, author: String!): SuccessMutationCall!
-  login(input: LoginInput!): SuccessLoginCall!
-  signup(input: SignupInput!): SuccessSignupCall!
+  getBooks: [Book]
 }

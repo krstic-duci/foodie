@@ -3,20 +3,20 @@
     "target": "es6",
     "lib": ["es5", "es6", "esnext.asynciterable", "es2017"],
     "types": ["node"],
+    "typeRoots": ["./src/types", "node_modules"],
     "module": "commonjs",
     "outDir": "dist",
     "sourceMap": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "rootDirs": ["src"],
+    "noImplicitAny": false,
+    "rootDirs": ["."],
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
       "__generated__/*": ["src/__generated__/*"],
-      "@database/*": ["src/db/*"],
-      "@resolvers/*": ["src/resolvers/*"]
     }
   },
   "exclude": ["node_modules", "src/__generated__/"],

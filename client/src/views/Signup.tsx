@@ -1,11 +1,17 @@
-import { useMutation } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Alert, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Link,
+  Stack,
+  TextField,
+  Typography
+} from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import * as z from "zod";
 
-import { graphql } from "../__generated__/gql";
+import NoAuthLayout from "../layouts/NoAuthLayout";
 
 const signupSchema = z
   .object({
@@ -33,17 +39,7 @@ const signupSchema = z
   });
 type FormData = z.infer<typeof signupSchema>;
 
-const SIGNUP_MUTATION = graphql(`
-  mutation Signup($input: SignupInput!) {
-    signup(input: $input) {
-      token
-    }
-  }
-`);
-
 const Signup = () => {
-  const [signupMutation, { data, loading, error }] =
-    useMutation(SIGNUP_MUTATION);
   const {
     reset,
     register,
@@ -55,94 +51,95 @@ const Signup = () => {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     console.log(data);
-    await signupMutation({
-      variables: {
-        input: {
-          firstname: data.firstname,
-          lastname: data.lastname,
-          email: data.email,
-          password: data.password,
-          telephone: data.telephone
-        }
-      }
-    });
     reset();
   };
   return (
-    <>
-      <h1>Please signup</h1>
-      <form>
-        <TextField
-          {...register("firstname")}
-          label='First Name'
-          type='text'
-          error={!!errors.firstname}
-          helperText={errors?.firstname?.message}
-          required
-          variant='outlined'
-        />
-        <TextField
-          {...register("lastname")}
-          label='Last Name'
-          type='text'
-          error={!!errors.lastname}
-          helperText={errors?.lastname?.message}
-          required
-          variant='outlined'
-        />
-        <TextField
-          {...register("email")}
-          label='Email'
-          type='email'
-          error={!!errors.email}
-          helperText={errors?.email?.message}
-          required
-          variant='outlined'
-        />
-        <TextField
-          {...register("password")}
-          label='Password'
-          type='password'
-          error={!!errors.password}
-          helperText={errors?.password?.message}
-          required
-          variant='outlined'
-        />
-        <TextField
-          {...register("confirmpassword")}
-          label='Confirm Password'
-          type='password'
-          error={!!errors.confirmpassword}
-          helperText={errors?.confirmpassword?.message}
-          required
-          variant='outlined'
-        />
-        <TextField
-          {...register("telephone")}
-          label='Telephone'
-          type='text'
-          error={!!errors.telephone}
-          helperText={errors?.telephone?.message}
-          required
-          variant='outlined'
-        />
-
-        <Button
-          disabled={loading}
-          variant='contained'
-          onClick={handleSubmit(onSubmit)}
-        >
-          Signup
-        </Button>
-      </form>
-
-      {error && <Alert severity='error'>Something went wrong...</Alert>}
-
-      <Typography>
-        Back to
-        <Link to='/login'> login</Link>
+    <NoAuthLayout centered>
+      <Typography component='h1' variant='h4'>
+        Please signup
       </Typography>
-    </>
+      <Box component='form' noValidate sx={{ mt: 2 }}>
+        <Stack>
+          <TextField
+            {...register("firstname")}
+            label='First Name'
+            placeholder='First name'
+            type='text'
+            error={!!errors.firstname}
+            helperText={errors?.firstname?.message}
+            required
+            variant='outlined'
+          />
+          <TextField
+            {...register("lastname")}
+            label='Last Name'
+            placeholder='Last name'
+            type='text'
+            error={!!errors.lastname}
+            helperText={errors?.lastname?.message}
+            required
+            variant='outlined'
+          />
+          <TextField
+            {...register("email")}
+            label='Email'
+            placeholder='Email'
+            type='email'
+            error={!!errors.email}
+            helperText={errors?.email?.message}
+            required
+            variant='outlined'
+          />
+          <TextField
+            {...register("password")}
+            label='Password'
+            placeholder='Password'
+            type='password'
+            error={!!errors.password}
+            helperText={errors?.password?.message}
+            required
+            variant='outlined'
+          />
+          <TextField
+            {...register("confirmpassword")}
+            label='Confirm Password'
+            placeholder='Confirm password'
+            type='password'
+            error={!!errors.confirmpassword}
+            helperText={errors?.confirmpassword?.message}
+            required
+            variant='outlined'
+          />
+          <TextField
+            {...register("telephone")}
+            label='Telephone'
+            placeholder='Telephone'
+            type='text'
+            error={!!errors.telephone}
+            helperText={errors?.telephone?.message}
+            required
+            variant='outlined'
+          />
+
+          <Button variant='contained' onClick={handleSubmit(onSubmit)}>
+            Signup
+          </Button>
+        </Stack>
+      </Box>
+
+      <Grid container>
+        <Grid item xs>
+          <Link href='/forgot-password' variant='body2'>
+            Forgot password?
+          </Link>
+        </Grid>
+        <Grid item>
+          <Link href='/login' variant='body2'>
+            {"Already have an account? Login"}
+          </Link>
+        </Grid>
+      </Grid>
+    </NoAuthLayout>
   );
 };
 

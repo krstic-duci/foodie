@@ -6,14 +6,15 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import bodyParser from "body-parser";
 import cors, { CorsRequest } from "cors";
+import * as dotenv from "dotenv";
 import express from "express";
 import { readFileSync } from "fs";
 import http from "http";
 
 import { db } from "./db/index";
-import { models } from "./db/models/index";
 import { resolvers } from "./resolvers/index";
-import { getToken } from "./utils/getToken";
+
+dotenv.config();
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 
@@ -28,30 +29,27 @@ const server = new ApolloServer({
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
 });
 
-db.connect()
-  .then(async () => {
-    await server.start();
+const corsOptions = {};
 
-    app.use(
-      "/graphql",
-      cors<CorsRequest>(),
-      // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
-      bodyParser.json({ limit: "50mb" }),
-      expressMiddleware(server, {
-        // TODO: check this
-        // @ts-ignore
-        context: ({ req, res }) => {
-          const token = req.headers.authorization;
-          const user = getToken(token);
-          return { models, user };
-        }
-      })
-    );
+const startApolloServer = async () => {
+  await db.connect();
 
-    await new Promise<void>((resolve) =>
-      httpServer.listen({ port: 4000 }, resolve)
-    );
-  })
-  .finally(() => {
-    console.log(`Server ready at http://localhost:4000/graphql`);
-  });
+  await server.start();
+
+  app.use(
+    "/graphql",
+    cors<CorsRequest>(),
+    // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
+    bodyParser.json({ limit: "50mb" }),
+    expressMiddleware(server, {
+      context: async ({ req, res }) => ({ req, res })
+    })
+  );
+
+  await new Promise<void>((resolve) =>
+    httpServer.listen({ port: 4000 }, resolve)
+  );
+  console.log(`Server ready at http://localhost:4000/graphql`);
+};
+
+startApolloServer();

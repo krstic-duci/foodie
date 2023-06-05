@@ -4,7 +4,6 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -17,77 +16,12 @@ export type Scalars = {
 export type Book = {
   __typename?: 'Book';
   author: Scalars['String'];
-  id: Scalars['ID'];
   title: Scalars['String'];
-};
-
-export type LoginInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type Mutation = {
-  __typename?: 'Mutation';
-  addBook: SuccessMutationCall;
-  login: SuccessLoginCall;
-  signup: SuccessSignupCall;
-};
-
-
-export type MutationAddBookArgs = {
-  author: Scalars['String'];
-  title: Scalars['String'];
-};
-
-
-export type MutationLoginArgs = {
-  input: LoginInput;
-};
-
-
-export type MutationSignupArgs = {
-  input: SignupInput;
 };
 
 export type Query = {
   __typename?: 'Query';
-  getBookById: Book;
-  getBooks: Array<Book>;
-};
-
-
-export type QueryGetBookByIdArgs = {
-  id: Scalars['ID'];
-};
-
-export type SignupInput = {
-  email: Scalars['String'];
-  firstname: Scalars['String'];
-  lastname: Scalars['String'];
-  password: Scalars['String'];
-  telephone: Scalars['String'];
-};
-
-export type SuccessLoginCall = {
-  __typename?: 'SuccessLoginCall';
-  token: Scalars['String'];
-};
-
-export type SuccessMutationCall = {
-  __typename?: 'SuccessMutationCall';
-  _: Scalars['Boolean'];
-};
-
-export type SuccessSignupCall = {
-  __typename?: 'SuccessSignupCall';
-  token: Scalars['String'];
-};
-
-export type User = {
-  __typename?: 'User';
-  books: Array<Book>;
-  email: Scalars['String'];
-  id: Scalars['ID'];
+  getBooks?: Maybe<Array<Maybe<Book>>>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -164,81 +98,30 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = ResolversObject<{
   Book: ResolverTypeWrapper<Book>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
-  LoginInput: LoginInput;
-  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
-  SignupInput: SignupInput;
   String: ResolverTypeWrapper<Scalars['String']>;
-  SuccessLoginCall: ResolverTypeWrapper<SuccessLoginCall>;
-  SuccessMutationCall: ResolverTypeWrapper<SuccessMutationCall>;
-  SuccessSignupCall: ResolverTypeWrapper<SuccessSignupCall>;
-  User: ResolverTypeWrapper<User>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Book: Book;
   Boolean: Scalars['Boolean'];
-  ID: Scalars['ID'];
-  LoginInput: LoginInput;
-  Mutation: {};
   Query: {};
-  SignupInput: SignupInput;
   String: Scalars['String'];
-  SuccessLoginCall: SuccessLoginCall;
-  SuccessMutationCall: SuccessMutationCall;
-  SuccessSignupCall: SuccessSignupCall;
-  User: User;
 }>;
 
 export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{
   author?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  addBook?: Resolver<ResolversTypes['SuccessMutationCall'], ParentType, ContextType, RequireFields<MutationAddBookArgs, 'author' | 'title'>>;
-  login?: Resolver<ResolversTypes['SuccessLoginCall'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
-  signup?: Resolver<ResolversTypes['SuccessSignupCall'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'input'>>;
-}>;
-
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getBookById?: Resolver<ResolversTypes['Book'], ParentType, ContextType, RequireFields<QueryGetBookByIdArgs, 'id'>>;
-  getBooks?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType>;
-}>;
-
-export type SuccessLoginCallResolvers<ContextType = any, ParentType extends ResolversParentTypes['SuccessLoginCall'] = ResolversParentTypes['SuccessLoginCall']> = ResolversObject<{
-  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type SuccessMutationCallResolvers<ContextType = any, ParentType extends ResolversParentTypes['SuccessMutationCall'] = ResolversParentTypes['SuccessMutationCall']> = ResolversObject<{
-  _?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type SuccessSignupCallResolvers<ContextType = any, ParentType extends ResolversParentTypes['SuccessSignupCall'] = ResolversParentTypes['SuccessSignupCall']> = ResolversObject<{
-  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
-  books?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType>;
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  getBooks?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Book?: BookResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  SuccessLoginCall?: SuccessLoginCallResolvers<ContextType>;
-  SuccessMutationCall?: SuccessMutationCallResolvers<ContextType>;
-  SuccessSignupCall?: SuccessSignupCallResolvers<ContextType>;
-  User?: UserResolvers<ContextType>;
 }>;
 
