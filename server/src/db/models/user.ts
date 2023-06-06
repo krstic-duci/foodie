@@ -2,13 +2,18 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    firstname: {
+    // TODO: add later
+    // lastname: {
+    //   type: String,
+    //   required: true
+    // },
+    // telephone: {
+    //   type: String || Number,
+    //   required: true
+    // },
+    firstName: {
       type: String,
-      required: true
-    },
-    lastname: {
-      type: String,
-      required: true
+      default: ""
     },
     email: {
       type: String,
@@ -17,10 +22,6 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true
-    },
-    telephone: {
-      type: String || Number,
       required: true
     }
   },
