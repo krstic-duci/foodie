@@ -1,6 +1,7 @@
 import { verify } from "jsonwebtoken";
 
-const getUserFromToken = (token: string | undefined) => {
+const getUserFromToken = (token: string | null) => {
+  console.log(token);
   if (token) {
     try {
       return verify(token, process.env.ACCESS_TOKEN_JWT_SECRET!);
@@ -9,7 +10,7 @@ const getUserFromToken = (token: string | undefined) => {
     }
   }
 
-  return { id: "", email: "", firstName: "" };
+  return null;
 };
 
 export default getUserFromToken;

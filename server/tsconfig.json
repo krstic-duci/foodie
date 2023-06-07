@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["es5", "es6", "esnext.asynciterable", "es2017"],
+    "target": "es2018",
+    "lib": ["esnext.asynciterable", "es2017", "es2018"],
     "types": ["node"],
     "typeRoots": ["./src/types", "node_modules"],
     "module": "commonjs",
@@ -12,11 +12,16 @@
     "strict": true,
     "noImplicitAny": false,
     "rootDirs": ["."],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "__generated__/*": ["src/__generated__/*"],
+      "__generated__/*": ["__generated__/*"],
+      "@models/*": ["db/models/*"],
+      "@resolvers/*": ["resolvers/*"],
+      "@utils/*": ["utils/*"]
     }
   },
   "exclude": ["node_modules", "src/__generated__/"],

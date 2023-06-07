@@ -1,75 +1,48 @@
-// @ts-ignore
-import { ApolloServer } from "@apollo/server";
-// @ts-ignore
-import { expressMiddleware } from "@apollo/server/express4";
-// @ts-ignore
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import { json } from "body-parser";
-import cors, { CorsRequest } from "cors";
+import "reflect-metadata";
 import * as dotenv from "dotenv";
-import express, { Request, Response } from "express";
-import { readFileSync } from "fs";
-import http from "http";
-
-import { db } from "./db/index";
-import { resolvers } from "./resolvers/index";
-import getUserFromToken from "./utils/getUserFromToken";
-
 dotenv.config();
 
-interface AppContext {
-  req: Request;
-  res: Response;
-  user?: {
-    id: string;
-    email: string;
-    firstName: string;
-  };
-}
+import { resolve } from "path";
+import http from "http";
+// @ts-expect-error
+import { ApolloServer } from "@apollo/server";
+// @ts-expect-error
+import { expressMiddleware } from "@apollo/server/express4";
+// @ts-expect-error
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import express from "express";
+import { json } from "body-parser";
+import cors, { CorsRequest } from "cors";
+import { buildSchema } from "type-graphql";
 
-const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
+import { db } from "./db/index";
+import { UserResolver } from "./resolvers/UserResolver";
 
-const app = express();
-app.disable("x-powered-by");
+(async () => {
+  const app = express();
+  const httpServer = http.createServer(app);
 
-const httpServer = http.createServer(app);
-
-const server = new ApolloServer<AppContext>({
-  typeDefs,
-  resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
-});
-
-const corsOptions = {};
-
-const startApolloServer = async () => {
   await db.connect();
+
+  const server = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [UserResolver],
+      emitSchemaFile: resolve(__dirname, "../schema.gql"),
+    }),
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+  });
 
   await server.start();
 
   app.use(
     "/graphql",
-    cors<CorsRequest>({
-      credentials: true,
-      origin: "http://localhost:4000/graphql"
-    }),
+    cors<CorsRequest>({ origin: "*", credentials: true }),
     json(),
-    expressMiddleware(server, {
-      context: async ({ req, res }) => ({ req, res })
-      // context: async ({ req, res }) => {
-      //   console.log(req.headers);
-      //   const user = getUserFromToken(req.headers.authorization || "");
-      //   console.log(user)
-
-      //   return { req, res };
-      // }
-    })
+    expressMiddleware(server)
   );
 
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
   );
   console.log(`Server ready at http://localhost:4000/graphql`);
-};
-
-startApolloServer();
+})();

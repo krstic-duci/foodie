@@ -2,10 +2,10 @@
   "name": "foodie",
   "version": "1.0.0",
   "description": "Foodie app",
-  "main": "server/src/index.ts",
   "scripts": {
     "install:server": "cd server && npm install",
     "install:client": "cd client && npm install",
+    "install": "npm run install:server && npm run install:client",
     "postinstall": "install:server && install:client",
     "lint:server": "cd server && npm run lint",
     "lint:client": "cd client && npm run lint",
