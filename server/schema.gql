@@ -4,14 +4,15 @@
 # -----------------------------------------------
 
 type Mutation {
-  register(input: RegisterUserInput!): Boolean!
+  register(password: String!, email: String!): Boolean!
 }
 
 type Query {
   hello: String!
+  users: [User!]!
 }
 
-input RegisterUserInput {
+type User {
+  id: Int!
   email: String!
-  password: String!
 }

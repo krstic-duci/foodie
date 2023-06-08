@@ -5,13 +5,22 @@
   "singleQuote": false,
   "semi": true,
   "jsxSingleQuote": true,
-  "importOrder": ["@models", "@resolvers", "^[./]", "^[../]", "@utils","__generated__"],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true,
+  "importOrderTypeScriptVersion": "5.0.4",
+  "importOrder": [
+    "<BUILT_IN_MODULES>",
+    "",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "@entity",
+    "",
+    "^[./]",
+    "",
+    "^[../]"
+  ],
   "importOrderParserPlugins": [
     "typescript",
     "jsx",
-    "decorators-legacy",
-    "classProperties"
+    "classProperties",
+    "decorators-legacy"
   ]
 }

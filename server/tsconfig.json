@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "lib": ["esnext.asynciterable", "es2017", "es2018"],
+    "target": "es6",
+    "lib": ["es6", "esnext.asynciterable", "es2017", "es2018"],
     "types": ["node"],
     "typeRoots": ["./src/types", "node_modules"],
     "module": "commonjs",
-    "outDir": "dist",
+    "outDir": "./dist",
     "sourceMap": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
@@ -14,16 +14,12 @@
     "rootDirs": ["."],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "moduleResolution": "nodenext",
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
     "esModuleInterop": true,
-    "baseUrl": "./src",
-    "paths": {
-      "__generated__/*": ["__generated__/*"],
-      "@models/*": ["db/models/*"],
-      "@resolvers/*": ["resolvers/*"],
-      "@utils/*": ["utils/*"]
-    }
+    "baseUrl": ".",
+    "paths": {}
   },
-  "exclude": ["node_modules", "src/__generated__/"],
-  "include": ["src/**/*"]
+  "exclude": ["node_modules"],
+  "include": ["./src/**/*.tsx", "./src/**/*.ts", "server.ts"]
 }
