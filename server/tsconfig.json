@@ -14,11 +14,15 @@
     "rootDirs": ["."],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@resolvers/*":["resolvers/*"],
+      "@entity/*":["entity/*"]
+    }
   },
   "exclude": ["node_modules"],
   "include": ["./src/**/*.tsx", "./src/**/*.ts", "server.ts"]

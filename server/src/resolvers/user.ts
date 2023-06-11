@@ -1,3 +1,4 @@
+import { ApolloError } from "apollo-server-core";
 import { hash } from "bcrypt";
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 
