@@ -3,7 +3,13 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type LoginResponse {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Mutation {
+  login(email: String!, password: String!): LoginResponse!
   register(email: String!, password: String!): Boolean!
 }
 
@@ -15,6 +21,6 @@ type Query {
 type User {
   email: String!
   firstName: String
-  id: String!
+  id: Int!
   lastName: String
 }

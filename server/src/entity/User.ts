@@ -1,13 +1,13 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, Int, ObjectType } from "type-graphql";
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 // TODO: validation
 @ObjectType()
 @Entity("users")
 export class User extends BaseEntity {
-  @Field(() => String)
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
+  @Field(() => Int)
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Field()
   @Column("text", { unique: true, nullable: false })
@@ -21,6 +21,6 @@ export class User extends BaseEntity {
   @Column("text", { nullable: true })
   lastName: string | null;
 
-  @Column("text", { select: false, nullable: false })
+  @Column("text", { nullable: false })
   password: string;
 }

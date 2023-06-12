@@ -5,7 +5,8 @@ import { resolve } from "path";
 
 import {
   ApolloServerPluginDrainHttpServer,
-  ApolloServerPluginLandingPageLocalDefault
+  ApolloServerPluginLandingPageGraphQLPlayground,
+  AuthenticationError
 } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
@@ -16,6 +17,7 @@ import { buildSchema } from "type-graphql";
 
 import { UserResolver } from "./src/resolvers/user";
 import AppDataSource from "./src/utils/appDataSource";
+import { verifyAccessToken, verifyRefreshToken } from "./src/utils/jwtTokens";
 
 dotenv.config();
 
@@ -43,9 +45,22 @@ const init = async () => {
     cache: "bounded",
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
-      ApolloServerPluginLandingPageLocalDefault({ embed: true })
+      ApolloServerPluginLandingPageGraphQLPlayground({
+        settings: { "request.credentials": "same-origin" }
+      })
     ],
-    context: ({ req, res }) => ({ req, res })
+    context: ({ req, res }) => {
+      const accessToken = req.cookies["x-access-token"];
+      const refreshToken = req.cookies["x-refresh-token"];
+
+      // 1. check if either access token and refresh token is valid, if not
+      // deny access to private query/mutation/subscription
+
+      // 2. if refresh token is valid, but access token isn't re-send the cookies
+
+      // 3.
+      return { req, res };
+    }
   });
 
   await apolloServer.start();
