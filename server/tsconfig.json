@@ -3,7 +3,7 @@
     "target": "es6",
     "lib": ["es6", "esnext.asynciterable", "es2017", "es2018"],
     "types": ["node"],
-    "typeRoots": ["./src/types", "node_modules"],
+    // "typeRoots": ["./src/types", "node_modules"],
     "module": "commonjs",
     "outDir": "./dist",
     "sourceMap": true,
@@ -18,10 +18,12 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
       "@resolvers/*":["resolvers/*"],
-      "@entity/*":["entity/*"]
+      "@entity/*":["entity/*"],
+      "@utils/*":["utils/*"],
+      "@middleware/*":["middleware/*"],
     }
   },
   "exclude": ["node_modules"],

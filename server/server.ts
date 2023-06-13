@@ -5,8 +5,7 @@ import { resolve } from "path";
 
 import {
   ApolloServerPluginDrainHttpServer,
-  ApolloServerPluginLandingPageGraphQLPlayground,
-  AuthenticationError
+  ApolloServerPluginLandingPageGraphQLPlayground
 } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
@@ -14,7 +13,10 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import express from "express";
 import { buildSchema } from "type-graphql";
+import { Context } from "types";
 
+import { User } from "./src/entity/User";
+import { authChecker } from "./src/middleware/auth";
 import { UserResolver } from "./src/resolvers/user";
 import AppDataSource from "./src/utils/appDataSource";
 import { verifyAccessToken, verifyRefreshToken } from "./src/utils/jwtTokens";
@@ -33,12 +35,10 @@ app.use(
 app.use(cookieParser());
 
 const init = async () => {
-  await AppDataSource.initialize();
-  console.log("Connected to Postgres");
-
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [UserResolver],
+      authChecker,
       emitSchemaFile: resolve(__dirname, "./schema.gql")
     }),
     csrfPrevention: true,
@@ -49,17 +49,22 @@ const init = async () => {
         settings: { "request.credentials": "same-origin" }
       })
     ],
-    context: ({ req, res }) => {
+    context: async ({ req, res, user }: Context) => {
       const accessToken = req.cookies["x-access-token"];
       const refreshToken = req.cookies["x-refresh-token"];
 
+      if (accessToken) {
+        const currentUser = verifyAccessToken<User>(accessToken);
+        user = currentUser;
+      }
+
+      return { req, res, user };
       // 1. check if either access token and refresh token is valid, if not
       // deny access to private query/mutation/subscription
 
       // 2. if refresh token is valid, but access token isn't re-send the cookies
 
-      // 3.
-      return { req, res };
+      // 3. all good, user can have access
     }
   });
 
@@ -73,6 +78,9 @@ const init = async () => {
   console.log(
     `Apollo server ready =>  http://localhost:4000${apolloServer.graphqlPath}`
   );
+
+  await AppDataSource.initialize();
+  console.log("Connected to Postgres");
 };
 
 init();

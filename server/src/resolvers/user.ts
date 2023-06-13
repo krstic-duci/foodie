@@ -1,8 +1,8 @@
-import { ApolloError } from "apollo-server-core";
+import { ApolloError, AuthenticationError } from "apollo-server-core";
 import { compare, hash } from "bcrypt";
-import { MyContext } from "src/types";
 import {
   Arg,
+  Authorized,
   Ctx,
   Field,
   Mutation,
@@ -10,6 +10,7 @@ import {
   Query,
   Resolver
 } from "type-graphql";
+import { Context } from "types";
 
 import { User } from "../entity/User";
 import { signAccessToken, signRefreshToken } from "../utils/jwtTokens";
@@ -30,6 +31,7 @@ export class UserResolver {
     return "hi!";
   }
 
+  @Authorized()
   @Query(() => [User])
   users() {
     return User.find();
@@ -58,7 +60,7 @@ export class UserResolver {
   async login(
     @Arg("email") email: string,
     @Arg("password") password: string,
-    @Ctx() { res }: MyContext
+    @Ctx() { res }: Context
   ) {
     const user = await User.findOne({ where: { email: email.trim() } });
 

@@ -35,12 +35,12 @@ export const signRefreshToken = (id: number) => {
   }
 };
 
-export const verifyAccessToken = (token: string) => {
+export const verifyAccessToken = <T>(token: string): T | null => {
   try {
     const verifiedAccessToken = verify(
       token,
       process.env.ACCESS_TOKEN_JWT_SECRET!
-    );
+    ) as T;
     return verifiedAccessToken;
   } catch (error) {
     console.error(error);
@@ -48,12 +48,12 @@ export const verifyAccessToken = (token: string) => {
   }
 };
 
-export const verifyRefreshToken = (token: string) => {
+export const verifyRefreshToken = <T>(token: string): T | null => {
   try {
     const verifiedRefreshToken = verify(
       token,
       process.env.REFRESH_TOKEN_JWT_SECRET!
-    );
+    ) as T;
     return verifiedRefreshToken;
   } catch (error) {
     console.error(error);
