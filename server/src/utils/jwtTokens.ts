@@ -1,13 +1,25 @@
 import { AuthenticationError } from "apollo-server-core";
 import { sign, verify } from "jsonwebtoken";
 
-export const signAccessToken = (id: number) => {
+type UserWithNoPassword = {
+  id: number;
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
+};
+
+export const signAccessToken = ({
+  id,
+  email,
+  firstName,
+  lastName
+}: UserWithNoPassword) => {
   try {
     const accessToken = sign(
-      { userId: id },
+      { id, email, firstName, lastName },
       process.env.ACCESS_TOKEN_JWT_SECRET!,
       {
-        expiresIn: "15m"
+        expiresIn: "1m"
       }
     );
 
@@ -18,6 +30,7 @@ export const signAccessToken = (id: number) => {
   }
 };
 
+// FIXME: do we need this (express-jwt should do this for us)
 export const signRefreshToken = (id: number) => {
   try {
     const refreshToken = sign(
@@ -35,6 +48,7 @@ export const signRefreshToken = (id: number) => {
   }
 };
 
+// FIXME: do we need this (express-jwt should do this for us)
 export const verifyAccessToken = <T>(token: string): T | null => {
   try {
     const verifiedAccessToken = verify(
@@ -48,6 +62,7 @@ export const verifyAccessToken = <T>(token: string): T | null => {
   }
 };
 
+// FIXME: do we need this (express-jwt should do this for us)
 export const verifyRefreshToken = <T>(token: string): T | null => {
   try {
     const verifiedRefreshToken = verify(

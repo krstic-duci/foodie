@@ -12,14 +12,17 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import express from "express";
+import {
+  expressjwt,
+  Request as JWTRequest,
+  UnauthorizedError
+} from "express-jwt";
 import { buildSchema } from "type-graphql";
-import { Context } from "types";
 
-import { User } from "./src/entity/User";
-import { authChecker } from "./src/middleware/auth";
-import { UserResolver } from "./src/resolvers/user";
-import AppDataSource from "./src/utils/appDataSource";
-import { verifyAccessToken, verifyRefreshToken } from "./src/utils/jwtTokens";
+import { resolvers } from "@resolvers/index";
+import { authMiddleware } from "@middleware/auth";
+import AppDataSource from "@utils/appDataSource";
+import type { CustomContext } from "@utils/types";
 
 dotenv.config();
 
@@ -37,8 +40,8 @@ app.use(cookieParser());
 const init = async () => {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver],
-      authChecker,
+      resolvers,
+      authChecker: authMiddleware,
       emitSchemaFile: resolve(__dirname, "./schema.gql")
     }),
     csrfPrevention: true,
@@ -46,29 +49,41 @@ const init = async () => {
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       ApolloServerPluginLandingPageGraphQLPlayground({
-        settings: { "request.credentials": "same-origin" }
+        settings: { "request.credentials": "include" }
       })
     ],
-    context: async ({ req, res, user }: Context) => {
-      const accessToken = req.cookies["x-access-token"];
-      const refreshToken = req.cookies["x-refresh-token"];
-
-      if (accessToken) {
-        const currentUser = verifyAccessToken<User>(accessToken);
-        user = currentUser;
-      }
-
-      return { req, res, user };
-      // 1. check if either access token and refresh token is valid, if not
-      // deny access to private query/mutation/subscription
-
-      // 2. if refresh token is valid, but access token isn't re-send the cookies
-
-      // 3. all good, user can have access
+    context: async ({ req, res }: CustomContext) => {
+      return { req, res };
     }
   });
 
   await apolloServer.start();
+
+  app.use((req: JWTRequest, res, next) => {
+    const handleErrorNext = (err: string | UnauthorizedError) => {
+      // TODO: do we need this if
+      if (typeof err === "string") {
+        return next();
+      }
+      if (
+        err instanceof UnauthorizedError &&
+        err.name === "UnauthorizedError"
+      ) {
+        return next();
+      }
+      next(err);
+    };
+    const middleware = expressjwt({
+      secret: process.env.ACCESS_TOKEN_JWT_SECRET!,
+      algorithms: ["HS256"],
+      credentialsRequired: false
+      // FIXME: How not to logout active users...?!?
+      // onExpired: async (_, err) => {}
+    });
+
+    middleware(req, res, handleErrorNext);
+  });
+
   // TODO: cors: false???
   apolloServer.applyMiddleware({ app, cors: false, path: "/graphql" });
 

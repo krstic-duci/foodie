@@ -1,4 +1,4 @@
-import { ApolloError, AuthenticationError } from "apollo-server-core";
+import { ApolloError } from "apollo-server-core";
 import { compare, hash } from "bcrypt";
 import {
   Arg,
@@ -10,11 +10,10 @@ import {
   Query,
   Resolver
 } from "type-graphql";
-import { Context } from "types";
 
-import { User } from "../entity/User";
-import { signAccessToken, signRefreshToken } from "../utils/jwtTokens";
-import { toMilliseconds } from "../utils/toMiliseconds";
+import { User } from "@entity/User";
+import { signAccessToken } from "@utils/jwtTokens";
+import { CustomContext } from "@utils/types";
 
 @ObjectType()
 class LoginResponse {
@@ -60,7 +59,7 @@ export class UserResolver {
   async login(
     @Arg("email") email: string,
     @Arg("password") password: string,
-    @Ctx() { res }: Context
+    @Ctx() { res }: CustomContext
   ) {
     const user = await User.findOne({ where: { email: email.trim() } });
 
@@ -75,20 +74,19 @@ export class UserResolver {
     }
 
     try {
-      const accessToken = signAccessToken(user.id);
-      const refreshToken = signRefreshToken(user.id);
-      res.cookie("x-access-token", accessToken, {
-        httpOnly: true,
-        maxAge: toMilliseconds(0, 15, 0) // 15 minutes
+      const accessToken = signAccessToken({
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName
       });
-      res.cookie("x-refresh-token", refreshToken, {
-        httpOnly: true,
-        maxAge: toMilliseconds(24, 0, 0) // 24 hours
-      });
+      // res.cookie("x-access-token", accessToken, {
+      //   httpOnly: true,
+      //   maxAge: toMilliseconds(0, 1, 0) // 15 minutes
+      // });
 
       return {
-        accessToken,
-        refreshToken
+        accessToken
       };
     } catch (error) {
       console.error(error);

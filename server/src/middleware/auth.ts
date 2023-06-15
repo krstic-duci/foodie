@@ -1,13 +1,16 @@
 import { AuthChecker } from "type-graphql";
-import { Context } from "types";
 
-export const authChecker: AuthChecker<Context> = ({
+import type { CustomContext } from "@utils/types";
+
+export const authMiddleware: AuthChecker<CustomContext> = ({
   root,
   args,
   context,
   info
 }) => {
-  if (!context.user) {
+  // TODO: only for testing
+  // console.log(context.req.auth, 'AUTH MIDDLEWARE')
+  if (!context.req.auth) {
     return false;
   }
   return true;
