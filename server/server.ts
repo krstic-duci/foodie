@@ -11,7 +11,7 @@ import { ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import * as dotenv from "dotenv";
-import express from "express";
+import express, { NextFunction, Response } from "express";
 import {
   expressjwt,
   Request as JWTRequest,
@@ -59,30 +59,64 @@ const init = async () => {
 
   await apolloServer.start();
 
-  app.use((req: JWTRequest, res, next) => {
-    const handleErrorNext = (err: string | UnauthorizedError) => {
-      // TODO: do we need this if
-      if (typeof err === "string") {
-        return next();
-      }
-      if (
-        err instanceof UnauthorizedError &&
-        err.name === "UnauthorizedError"
-      ) {
-        return next();
-      }
-      next(err);
-    };
-    const middleware = expressjwt({
+  // app.use((req: JWTRequest, res, next) => {
+  //   const handleErrorNext = (err: string | UnauthorizedError) => {
+  //     // TODO: do we need this if
+  //     if (typeof err === "string") {
+  //       return next();
+  //     }
+  //     console.log(JSON.stringify(err, null, 2));
+  //     if (
+  //       err instanceof UnauthorizedError &&
+  //       err.name === "UnauthorizedError"
+  //     ) {
+  //       return next();
+  //     }
+  //     next(err);
+  //   };
+  //   const middleware = expressjwt({
+  //     secret: process.env.ACCESS_TOKEN_JWT_SECRET!,
+  //     algorithms: ["HS256"],
+  //     credentialsRequired: false,
+  //     // FIXME: How not to logout active users...?!?
+  //     onExpired: async (req, err) => {
+  //       // @ts-expect-error
+  //       if (new Date() - err.inner.expiredAt < 5000) {
+  //         console.log('HERE I AM')
+  //         return;
+  //       }
+  //       throw err;
+  //     }
+  //   });
+
+  //   middleware(req, res, handleErrorNext);
+  // });
+
+  app.use(
+    expressjwt({
       secret: process.env.ACCESS_TOKEN_JWT_SECRET!,
       algorithms: ["HS256"],
       credentialsRequired: false
-      // FIXME: How not to logout active users...?!?
-      // onExpired: async (_, err) => {}
-    });
+      // TODO: cookie or token
+      // getToken: (req: JWTRequest) => {
+      //   if (req.cookies["x-access-token"]) {
+      //     return req.cookies["x-access-token"];
+      //   }
 
-    middleware(req, res, handleErrorNext);
-  });
+      //   return null;
+      // }
+    }),
+    (
+      err: UnauthorizedError,
+      _req: JWTRequest,
+      _res: Response,
+      next: NextFunction
+    ) => {
+      // TODO: move to constant
+      if (err.code === "invalid_token") return next();
+      return next(err);
+    }
+  );
 
   // TODO: cors: false???
   apolloServer.applyMiddleware({ app, cors: false, path: "/graphql" });

@@ -13,14 +13,13 @@ import {
 
 import { User } from "@entity/User";
 import { signAccessToken } from "@utils/jwtTokens";
+import { toMilliseconds } from "@utils/toMiliseconds";
 import { CustomContext } from "@utils/types";
 
 @ObjectType()
 class LoginResponse {
   @Field()
   accessToken: string;
-  @Field()
-  refreshToken: string;
 }
 
 @Resolver()
@@ -80,10 +79,10 @@ export class UserResolver {
         firstName: user.firstName,
         lastName: user.lastName
       });
-      // res.cookie("x-access-token", accessToken, {
-      //   httpOnly: true,
-      //   maxAge: toMilliseconds(0, 1, 0) // 15 minutes
-      // });
+      res.cookie("x-access-token", accessToken, {
+        httpOnly: true,
+        maxAge: toMilliseconds(0, 15, 0) // 15 minutes
+      });
 
       return {
         accessToken

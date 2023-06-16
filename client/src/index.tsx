@@ -1,4 +1,9 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloProvider,
+  createHttpLink,
+  InMemoryCache
+} from "@apollo/client";
 import CssBaseline from "@mui/material/CssBaseline";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -6,8 +11,13 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+const link = createHttpLink({
+  uri: "/graphql",
+  credentials: "same-origin"
+});
+
 const client = new ApolloClient({
-  uri: "http://127.0.0.1:4000/graphql",
+  link,
   cache: new InMemoryCache()
 });
 

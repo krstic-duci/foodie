@@ -2,7 +2,7 @@ import { AuthenticationError } from "apollo-server-core";
 import { sign, verify } from "jsonwebtoken";
 
 type UserWithNoPassword = {
-  id: number;
+  id: string;
   email: string;
   firstName: string | null;
   lastName: string | null;
@@ -19,7 +19,7 @@ export const signAccessToken = ({
       { id, email, firstName, lastName },
       process.env.ACCESS_TOKEN_JWT_SECRET!,
       {
-        expiresIn: "1m"
+        expiresIn: "15m"
       }
     );
 
