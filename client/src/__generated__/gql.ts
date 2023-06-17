@@ -13,9 +13,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query GetBooks {\n    getBooks {\n      title\n      author\n    }\n  }\n": types.GetBooksDocument,
-    "\n  mutation Login($input: LoginInput!) {\n    login(input: $input) {\n      token\n    }\n  }\n": types.LoginDocument,
-    "\n  mutation Signup($input: SignupInput!) {\n    signup(input: $input) {\n      token\n    }\n  }\n": types.SignupDocument,
+    "\n  query Hello {\n    hello\n  }\n": types.HelloDocument,
+    "\n  mutation Login($password: String!, $email: String!) {\n    login(password: $password, email: $email) {\n      accessToken\n    }\n  }\n": types.LoginDocument,
 };
 
 /**
@@ -35,15 +34,11 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetBooks {\n    getBooks {\n      title\n      author\n    }\n  }\n"): (typeof documents)["\n  query GetBooks {\n    getBooks {\n      title\n      author\n    }\n  }\n"];
+export function graphql(source: "\n  query Hello {\n    hello\n  }\n"): (typeof documents)["\n  query Hello {\n    hello\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation Login($input: LoginInput!) {\n    login(input: $input) {\n      token\n    }\n  }\n"): (typeof documents)["\n  mutation Login($input: LoginInput!) {\n    login(input: $input) {\n      token\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation Signup($input: SignupInput!) {\n    signup(input: $input) {\n      token\n    }\n  }\n"): (typeof documents)["\n  mutation Signup($input: SignupInput!) {\n    signup(input: $input) {\n      token\n    }\n  }\n"];
+export function graphql(source: "\n  mutation Login($password: String!, $email: String!) {\n    login(password: $password, email: $email) {\n      accessToken\n    }\n  }\n"): (typeof documents)["\n  mutation Login($password: String!, $email: String!) {\n    login(password: $password, email: $email) {\n      accessToken\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

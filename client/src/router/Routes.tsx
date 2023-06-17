@@ -24,17 +24,7 @@ const AppRoutes = (props: AppRoutesProp) => {
       {/* Unguarded Routes */}
       <Route path={LOGIN_ROUTE} Component={Login} />
       <Route path={SIGNUP_ROUTE} Component={Signup} />
-      {/* Non-Authenticated Routes: accessible only if user in not authenticated */}
-      {/* <Route
-        element={
-          <PrivateRoute
-            isRouteAccessible={!isAuthenticated}
-            redirectRoute={HOME_ROUTE}
-          />
-        }
-      >
-        <Route path={LOGIN_ROUTE} Component={Login} />
-      </Route> */}
+
       {/* Authenticated Routes */}
       <Route
         element={

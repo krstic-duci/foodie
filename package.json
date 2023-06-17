@@ -2,11 +2,10 @@
   "name": "foodie",
   "version": "1.0.0",
   "description": "Foodie app",
-  "main": "server/src/index.ts",
   "scripts": {
     "install:server": "cd server && npm install",
     "install:client": "cd client && npm install",
-    "postinstall": "install:server && install:client",
+    "postinstall": "npm run install:server && npm run install:client",
     "lint:server": "cd server && npm run lint",
     "lint:client": "cd client && npm run lint",
     "test:server": "cd server && npm test",
@@ -18,10 +17,13 @@
     "dev": "concurrently --names \"server,client\" -c \"auto\" \"npm run server:dev\" \"npm run client:dev\"",
     "prepare": "husky install"
   },
+  "engines": {
+    "node": "16.16.0"
+  },
   "author": "krstic.duci@gmail.com",
   "license": "ISC",
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "4.1.1",
+    "@ianvs/prettier-plugin-sort-imports": "4.0.2",
     "concurrently": "8.0.1",
     "husky": "8.0.0",
     "prettier": "2.8.8"

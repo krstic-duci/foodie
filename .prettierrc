@@ -5,7 +5,25 @@
   "singleQuote": false,
   "semi": true,
   "jsxSingleQuote": true,
-  "importOrder": ["^[./]", "^[../]", "__generated__"],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true
+  "importOrderTypeScriptVersion": "5.0.4",
+  "importOrder": [
+    "<BUILT_IN_MODULES>",
+    "",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "@entity",
+    "@resolvers",
+    "@middleware",
+    "@utils",
+    "",
+    "^[./]",
+    "",
+    "^[../]"
+  ],
+  "importOrderParserPlugins": [
+    "typescript",
+    "jsx",
+    "classProperties",
+    "decorators-legacy"
+  ]
 }

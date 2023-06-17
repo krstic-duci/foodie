@@ -1,5 +1,7 @@
+import { useMutation } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Alert,
   Box,
   Button,
   Grid,
@@ -11,7 +13,8 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 
-import DisplayBooks from "../components/DisplayBooks";
+import { graphql } from "../__generated__/gql";
+import DisplayHello from "../components/DisplayHello";
 import NoAuthLayout from "../layouts/NoAuthLayout";
 
 const loginSchema = z.object({
@@ -24,9 +27,17 @@ const loginSchema = z.object({
 });
 type FormData = z.infer<typeof loginSchema>;
 
+const LOGIN_MUTATION = graphql(`
+  mutation Login($password: String!, $email: String!) {
+    login(password: $password, email: $email) {
+      accessToken
+    }
+  }
+`);
+
 const Login = () => {
+  const [loginMutation, { loading, error }] = useMutation(LOGIN_MUTATION);
   const {
-    reset,
     register,
     handleSubmit,
     formState: { errors }
@@ -34,15 +45,28 @@ const Login = () => {
     resolver: zodResolver(loginSchema)
   });
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log(data);
-    reset();
+  const onSubmit: SubmitHandler<FormData> = async (input) => {
+    try {
+      const { data } = await loginMutation({
+        variables: { email: input.email, password: input.password }
+      });
+      if (data?.login.accessToken) {
+        // store the auth in the Context
+        // navigate to the home page
+        // navigate("/", { replace: true });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <NoAuthLayout centered>
       <Typography component='h1' variant='h4'>
         This is login page, welcome
       </Typography>
+      {error && (
+        <Alert severity='error'>Auth failed, please try again...</Alert>
+      )}
       <Box
         component='form'
         noValidate
@@ -71,7 +95,11 @@ const Login = () => {
             variant='outlined'
           />
 
-          <Button variant='contained' onClick={handleSubmit(onSubmit)}>
+          <Button
+            disabled={loading}
+            variant='contained'
+            onClick={handleSubmit(onSubmit)}
+          >
             Login
           </Button>
         </Stack>
@@ -89,7 +117,7 @@ const Login = () => {
         </Grid>
       </Box>
       {/* FIXME: this is a test to ensure that graphql server is working */}
-      {/* <DisplayBooks /> */}
+      <DisplayHello />
     </NoAuthLayout>
   );
 };
