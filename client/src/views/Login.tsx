@@ -11,7 +11,6 @@ import {
   Typography
 } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import * as z from "zod";
 
 import { graphql } from "../__generated__/gql";
@@ -37,9 +36,7 @@ const LOGIN_MUTATION = graphql(`
 `);
 
 const Login = () => {
-  const navigate = useNavigate();
-
-  const [loginMutation, { data, loading, error }] = useMutation(LOGIN_MUTATION);
+  const [loginMutation, { loading, error }] = useMutation(LOGIN_MUTATION);
   const {
     register,
     handleSubmit,
@@ -49,16 +46,18 @@ const Login = () => {
   });
 
   const onSubmit: SubmitHandler<FormData> = async (input) => {
-    console.log(input);
-    await loginMutation({
-      variables: { email: input.email, password: input.password }
-    });
-    // FIXME: undefined
-    console.log(data);
-    // store the auth in the Context
-
-    // navigate to the home page
-    navigate("/", { replace: true });
+    try {
+      const { data } = await loginMutation({
+        variables: { email: input.email, password: input.password }
+      });
+      if (data?.login.accessToken) {
+        // store the auth in the Context
+        // navigate to the home page
+        // navigate("/", { replace: true });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <NoAuthLayout centered>

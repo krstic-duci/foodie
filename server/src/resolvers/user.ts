@@ -1,5 +1,6 @@
 import { ApolloError } from "apollo-server-core";
 import { compare, hash } from "bcrypt";
+import { Response } from "express";
 import {
   Arg,
   Authorized,
@@ -12,7 +13,11 @@ import {
 } from "type-graphql";
 
 import { User } from "@entity/User";
-import { signAccessToken } from "@utils/jwtTokens";
+import {
+  ACCESS_TOKEN_FIFTEEN_MINUTES,
+  REFERSH_TOKEN_ONE_DAY
+} from "@utils/constants";
+import { signAccessToken, signRefreshToken } from "@utils/jwtTokens";
 import { toMilliseconds } from "@utils/toMiliseconds";
 import { CustomContext } from "@utils/types";
 
@@ -59,7 +64,7 @@ export class UserResolver {
     @Arg("email") email: string,
     @Arg("password") password: string,
     @Ctx() { res }: CustomContext
-  ) {
+  ): Promise<LoginResponse> {
     const user = await User.findOne({ where: { email: email.trim() } });
 
     if (!user) {
@@ -73,15 +78,17 @@ export class UserResolver {
     }
 
     try {
-      const accessToken = signAccessToken({
+      const signUser = {
         id: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName
-      });
-      res.cookie("x-access-token", accessToken, {
-        httpOnly: true,
-        maxAge: toMilliseconds(0, 15, 0) // 15 minutes
+      };
+      const accessToken = signAccessToken(signUser);
+      const refreshToken = signRefreshToken(signUser);
+
+      res.cookie("dule", refreshToken, {
+        httpOnly: true
       });
 
       return {

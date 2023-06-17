@@ -5,8 +5,7 @@
   "scripts": {
     "install:server": "cd server && npm install",
     "install:client": "cd client && npm install",
-    "install": "npm run install:server && npm run install:client",
-    "postinstall": "install:server && install:client",
+    "postinstall": "npm run install:server && npm run install:client",
     "lint:server": "cd server && npm run lint",
     "lint:client": "cd client && npm run lint",
     "test:server": "cd server && npm test",
@@ -17,6 +16,9 @@
     "client:dev": "cd client && npm start",
     "dev": "concurrently --names \"server,client\" -c \"auto\" \"npm run server:dev\" \"npm run client:dev\"",
     "prepare": "husky install"
+  },
+  "engines": {
+    "node": "16.16.0"
   },
   "author": "krstic.duci@gmail.com",
   "license": "ISC",

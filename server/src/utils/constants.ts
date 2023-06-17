@@ -1,0 +1,2 @@
+export const ACCESS_TOKEN_FIFTEEN_MINUTES = 15;
+export const REFERSH_TOKEN_ONE_DAY = 24;

@@ -8,6 +8,7 @@ import {
   ApolloServerPluginLandingPageGraphQLPlayground
 } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-express";
+import { json } from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import * as dotenv from "dotenv";
@@ -29,13 +30,40 @@ dotenv.config();
 const app = express();
 const httpServer = http.createServer(app);
 app.disable("x-powered-by");
+app.use(cookieParser());
+app.use(json());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://studio.apollographql.com"],
     credentials: true
   })
 );
-app.use(cookieParser());
+
+app.use(
+  expressjwt({
+    secret: process.env.ACCESS_TOKEN_JWT_SECRET!,
+    algorithms: ["HS256"],
+    credentialsRequired: false
+    // FIXME: How to handle
+    // onExpired: async (_req, err) => {
+    //   // @ts-expect-error
+    //   if (new Date() - err.inner.expiredAt < 5000) {
+    //     return;
+    //   }
+    //   throw err;
+    // }
+  }),
+  (
+    err: UnauthorizedError,
+    _req: JWTRequest,
+    _res: Response,
+    next: NextFunction
+  ) => {
+    // TODO: move to constant
+    if (err.code === "invalid_token") return next();
+    return next(err);
+  }
+);
 
 const init = async () => {
   const apolloServer = new ApolloServer({
@@ -46,12 +74,7 @@ const init = async () => {
     }),
     csrfPrevention: true,
     cache: "bounded",
-    plugins: [
-      ApolloServerPluginDrainHttpServer({ httpServer }),
-      ApolloServerPluginLandingPageGraphQLPlayground({
-        settings: { "request.credentials": "include" }
-      })
-    ],
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     context: async ({ req, res }: CustomContext) => {
       return { req, res };
     }
@@ -59,67 +82,7 @@ const init = async () => {
 
   await apolloServer.start();
 
-  // app.use((req: JWTRequest, res, next) => {
-  //   const handleErrorNext = (err: string | UnauthorizedError) => {
-  //     // TODO: do we need this if
-  //     if (typeof err === "string") {
-  //       return next();
-  //     }
-  //     console.log(JSON.stringify(err, null, 2));
-  //     if (
-  //       err instanceof UnauthorizedError &&
-  //       err.name === "UnauthorizedError"
-  //     ) {
-  //       return next();
-  //     }
-  //     next(err);
-  //   };
-  //   const middleware = expressjwt({
-  //     secret: process.env.ACCESS_TOKEN_JWT_SECRET!,
-  //     algorithms: ["HS256"],
-  //     credentialsRequired: false,
-  //     // FIXME: How not to logout active users...?!?
-  //     onExpired: async (req, err) => {
-  //       // @ts-expect-error
-  //       if (new Date() - err.inner.expiredAt < 5000) {
-  //         console.log('HERE I AM')
-  //         return;
-  //       }
-  //       throw err;
-  //     }
-  //   });
-
-  //   middleware(req, res, handleErrorNext);
-  // });
-
-  app.use(
-    expressjwt({
-      secret: process.env.ACCESS_TOKEN_JWT_SECRET!,
-      algorithms: ["HS256"],
-      credentialsRequired: false
-      // TODO: cookie or token
-      // getToken: (req: JWTRequest) => {
-      //   if (req.cookies["x-access-token"]) {
-      //     return req.cookies["x-access-token"];
-      //   }
-
-      //   return null;
-      // }
-    }),
-    (
-      err: UnauthorizedError,
-      _req: JWTRequest,
-      _res: Response,
-      next: NextFunction
-    ) => {
-      // TODO: move to constant
-      if (err.code === "invalid_token") return next();
-      return next(err);
-    }
-  );
-
-  // TODO: cors: false???
-  apolloServer.applyMiddleware({ app, cors: false, path: "/graphql" });
+  apolloServer.applyMiddleware({ app, path: apolloServer.graphqlPath });
 
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
