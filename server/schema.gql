@@ -9,7 +9,7 @@ type LoginResponse {
 
 type Mutation {
   login(email: String!, password: String!): LoginResponse!
-  register(email: String!, password: String!): Boolean!
+  register(email: String!, firstName: String, lastName: String, password: String!): Boolean!
 }
 
 type Query {
@@ -19,7 +19,7 @@ type Query {
 
 type User {
   email: String!
-  firstName: String
+  firstName: String!
   id: String!
-  lastName: String
+  lastName: String!
 }

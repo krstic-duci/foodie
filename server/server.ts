@@ -22,14 +22,13 @@ import { buildSchema } from "type-graphql";
 
 import { resolvers } from "@resolvers/index";
 import { authMiddleware } from "@middleware/auth";
-import AppDataSource from "@utils/appDataSource";
+import DataBase from "@utils/database";
 import type { CustomContext } from "@utils/types";
 
 dotenv.config();
 
 const app = express();
 const httpServer = http.createServer(app);
-app.disable("x-powered-by");
 app.use(cookieParser());
 app.use(json());
 app.use(
@@ -91,7 +90,8 @@ const init = async () => {
     `Apollo server ready =>  http://localhost:4000${apolloServer.graphqlPath}`
   );
 
-  await AppDataSource.initialize();
+  await DataBase.initialize();
+  // await DataBase.dropDatabase();
   console.log("Connected to Postgres");
 };
 

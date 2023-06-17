@@ -1,31 +1,47 @@
-import { isEmail, Min } from "class-validator";
+import { IsEmail, Min, validateOrReject } from "class-validator";
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn
+} from "typeorm";
 
-// TODO: validation
+// FIXME: Validation is not working
 @ObjectType()
 @Entity("users")
 export class User extends BaseEntity {
-  @Field(() => String)
+  @Field()
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field(() => String)
+  @Field()
   @Column("text", { unique: true, nullable: false })
-  // FIXME: not working for some reason
-  // @isEmail()
+  @IsEmail()
   email: string;
 
-  @Field(() => String || null, { nullable: true })
+  @Field()
   @Column("text", { nullable: true })
-  @Min(2)
-  firstName: string | null;
+  @Min(2, { message: "First Name too short" })
+  firstName: string;
 
-  @Field(() => String || null, { nullable: true })
+  @Field()
   @Column("text", { nullable: true })
-  @Min(2)
-  lastName: string | null;
+  @Min(2, { message: "Last Name too short" })
+  lastName: string;
 
   @Column("text", { nullable: false })
   password: string;
+
+  @Column("text", { select: false, nullable: true })
+  refreshToken: string;
+
+  // HOOKS
+  @BeforeInsert()
+  @BeforeUpdate()
+  async validate() {
+    await validateOrReject(this);
+  }
 }

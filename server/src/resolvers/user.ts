@@ -1,6 +1,5 @@
 import { ApolloError } from "apollo-server-core";
 import { compare, hash } from "bcrypt";
-import { Response } from "express";
 import {
   Arg,
   Authorized,
@@ -13,12 +12,7 @@ import {
 } from "type-graphql";
 
 import { User } from "@entity/User";
-import {
-  ACCESS_TOKEN_FIFTEEN_MINUTES,
-  REFERSH_TOKEN_ONE_DAY
-} from "@utils/constants";
 import { signAccessToken, signRefreshToken } from "@utils/jwtTokens";
-import { toMilliseconds } from "@utils/toMiliseconds";
 import { CustomContext } from "@utils/types";
 
 @ObjectType()
@@ -43,14 +37,18 @@ export class UserResolver {
   @Mutation(() => Boolean)
   async register(
     @Arg("email") email: string,
-    @Arg("password") password: string
+    @Arg("password") password: string,
+    @Arg("firstName", { nullable: true }) firstName: string,
+    @Arg("lastName", { nullable: true }) lastName: string
   ) {
     try {
       const hashedPassword = await hash(password, 12);
 
       await User.insert({
         email: email.trim(),
-        password: hashedPassword
+        password: hashedPassword,
+        firstName,
+        lastName
       });
       return true;
     } catch (error) {
@@ -88,7 +86,10 @@ export class UserResolver {
       const refreshToken = signRefreshToken(signUser);
 
       res.cookie("dule", refreshToken, {
-        httpOnly: true
+        httpOnly: true,
+        sameSite: "lax"
+        // TODO: if we have https
+        // secure: true
       });
 
       return {
