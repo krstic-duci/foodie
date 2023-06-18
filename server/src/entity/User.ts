@@ -1,15 +1,6 @@
-import { IsEmail, Min, validateOrReject } from "class-validator";
 import { Field, ObjectType } from "type-graphql";
-import {
-  BaseEntity,
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  PrimaryGeneratedColumn
-} from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-// FIXME: Validation is not working
 @ObjectType()
 @Entity("users")
 export class User extends BaseEntity {
@@ -19,17 +10,14 @@ export class User extends BaseEntity {
 
   @Field()
   @Column("text", { unique: true, nullable: false })
-  @IsEmail()
   email: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column("text", { nullable: true })
-  @Min(2, { message: "First Name too short" })
   firstName: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column("text", { nullable: true })
-  @Min(2, { message: "Last Name too short" })
   lastName: string;
 
   @Column("text", { nullable: false })
@@ -37,11 +25,4 @@ export class User extends BaseEntity {
 
   @Column("text", { select: false, nullable: true })
   refreshToken: string;
-
-  // HOOKS
-  @BeforeInsert()
-  @BeforeUpdate()
-  async validate() {
-    await validateOrReject(this);
-  }
 }

@@ -1,7 +1,6 @@
-import { Response } from "express";
-import { Request as JWTRequest } from "express-jwt";
+import { Request, Response } from "express";
 
 export interface CustomContext {
-  req: JWTRequest;
+  req: Request;
   res: Response;
 }

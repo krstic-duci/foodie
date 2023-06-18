@@ -1,10 +1,12 @@
 import { ApolloError } from "apollo-server-core";
 import { compare, hash } from "bcrypt";
+import { IsEmail, Min } from "class-validator";
 import {
   Arg,
   Authorized,
   Ctx,
   Field,
+  InputType,
   Mutation,
   ObjectType,
   Query,
@@ -12,13 +14,32 @@ import {
 } from "type-graphql";
 
 import { User } from "@entity/User";
-import { signAccessToken, signRefreshToken } from "@utils/jwtTokens";
+import { COOKIE_NAME } from "@utils/constants";
+import { signAccessToken, signRefreshTokenInCookie } from "@utils/jwtTokens";
 import { CustomContext } from "@utils/types";
 
 @ObjectType()
 class LoginResponse {
-  @Field()
+  @Field({ nullable: false })
   accessToken: string;
+}
+
+@InputType()
+class SignupInput {
+  @Field()
+  @IsEmail()
+  email: string;
+
+  @Field()
+  password: string;
+
+  @Field({ nullable: true })
+  @Min(2, { message: "First name too short" })
+  firstName: string;
+
+  @Field({ nullable: true })
+  @Min(2, { message: "Last name too short" })
+  lastName: string;
 }
 
 @Resolver()
@@ -35,11 +56,8 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async register(
-    @Arg("email") email: string,
-    @Arg("password") password: string,
-    @Arg("firstName", { nullable: true }) firstName: string,
-    @Arg("lastName", { nullable: true }) lastName: string
+  async signup(
+    @Arg("input") { email, password, firstName, lastName }: SignupInput
   ) {
     try {
       const hashedPassword = await hash(password, 12);
@@ -72,24 +90,15 @@ export class UserResolver {
     const isPasswordValid = await compare(password, user.password);
 
     if (!isPasswordValid) {
-      throw new ApolloError("Cannot login...");
+      throw new ApolloError("Auth failed, please try again...");
     }
 
     try {
-      const signUser = {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName
-      };
-      const accessToken = signAccessToken(signUser);
-      const refreshToken = signRefreshToken(signUser);
+      const accessToken = signAccessToken(user.id);
+      const foodieCookie = signRefreshTokenInCookie(user.id);
 
-      res.cookie("dule", refreshToken, {
-        httpOnly: true,
-        sameSite: "lax"
-        // TODO: if we have https
-        // secure: true
+      res.cookie(COOKIE_NAME, foodieCookie, {
+        httpOnly: true
       });
 
       return {

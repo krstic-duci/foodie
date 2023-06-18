@@ -3,62 +3,39 @@ import { sign, verify } from "jsonwebtoken";
 
 import {
   ACCESS_TOKEN_FIFTEEN_MINUTES,
-  REFERSH_TOKEN_ONE_DAY
+  REFERSH_TOKEN_TWO_DAYS
 } from "./constants";
-import { toMilliseconds } from "./toMiliseconds";
 
-type UserWithNoPassword = {
-  id: string;
-  email: string;
-  firstName: string | null;
-  lastName: string | null;
-};
-
-export const signAccessToken = ({
-  id,
-  email,
-  firstName,
-  lastName
-}: UserWithNoPassword) => {
+export const signAccessToken = (id: string) => {
   try {
-    const accessToken = sign(
-      { id, email, firstName, lastName },
-      process.env.ACCESS_TOKEN_JWT_SECRET!,
-      {
-        expiresIn: "15m"
-      }
-    );
+    const accessToken = sign({ id }, process.env.ACCESS_TOKEN_JWT_SECRET!, {
+      expiresIn: ACCESS_TOKEN_FIFTEEN_MINUTES
+    });
 
     return accessToken;
   } catch (error) {
     console.error(error);
-    throw new AuthenticationError("Unauthorized...");
+    throw new AuthenticationError(
+      "Something is wrong, please check login details..."
+    );
   }
 };
 
-export const signRefreshToken = ({
-  id,
-  email,
-  firstName,
-  lastName
-}: UserWithNoPassword) => {
+export const signRefreshTokenInCookie = (id: string) => {
   try {
-    const refreshToken = sign(
-      { id, email, firstName, lastName },
-      process.env.REFRESH_TOKEN_JWT_SECRET!,
-      {
-        expiresIn: "7 days"
-      }
-    );
+    const foodieCookie = sign({ id }, process.env.REFRESH_TOKEN_JWT_SECRET!, {
+      expiresIn: REFERSH_TOKEN_TWO_DAYS
+    });
 
-    return refreshToken;
+    return foodieCookie;
   } catch (error) {
     console.error(error);
-    throw new AuthenticationError("Unauthorized...");
+    throw new AuthenticationError(
+      "Something is wrong, please check login details..."
+    );
   }
 };
 
-// FIXME: do we need this (express-jwt should do this for us)
 export const verifyAccessToken = (token: string) => {
   try {
     const verifiedAccessToken = verify(
@@ -68,12 +45,11 @@ export const verifyAccessToken = (token: string) => {
     return verifiedAccessToken;
   } catch (error) {
     console.error(error);
-    throw new AuthenticationError("Unauthorized - cannot verify cookies...");
+    throw new AuthenticationError("Unauthorized...");
   }
 };
 
-// FIXME: do we need this (express-jwt should do this for us)
-export const verifyRefreshToken = (token: string) => {
+export const verifyRefreshTokenInCookie = (token: string) => {
   try {
     const verifiedRefreshToken = verify(
       token,
@@ -82,6 +58,6 @@ export const verifyRefreshToken = (token: string) => {
     return verifiedRefreshToken;
   } catch (error) {
     console.error(error);
-    throw new AuthenticationError("Unauthorized - cannot verify cookies...");
+    throw new AuthenticationError("Unauthorized...");
   }
 };

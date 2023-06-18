@@ -1,3 +1,12 @@
+# Installation
+In order to install project locally please
+- Install postgresql
+```bash
+brew install postgresql@14
+```
+- Make new file `.env` inside `server` root folder with dummy values following `.env.example` structure
+
+# Running
 1. Run below in the root to install both server and client
 ```
 npm install
@@ -19,6 +28,3 @@ npm start
 ```
 
 5. to be continued...
-
-NOTE: this project assumes you have `postgresql` installed locally, please
-edit settings in `server/src/utils/appDataSource.ts` with your local database
